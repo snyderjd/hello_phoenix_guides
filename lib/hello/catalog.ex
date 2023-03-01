@@ -101,4 +101,13 @@ defmodule Hello.Catalog do
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
   end
+
+  @spec inc_page_views(%Product{}) :: map()
+  def inc_page_views(%Product{} = product) do
+    {1, [%Product{views: views}]} =
+      from(p in Product, where: p.id == ^product.id, select: [:views])
+      |> Repo.update_all(inc: [views: 1])
+
+    put_in(product.views, views)
+  end
 end
