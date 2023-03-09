@@ -107,6 +107,12 @@ defmodule Hello.ShoppingCart do
     {:ok, reload_cart(cart)}
   end
 
+  @spec prune_cart_items(Cart.t) :: tuple
+  def prune_cart_items(%Cart{} = cart) do
+    {_, _} = Repo.delete_all(from(i in CartItem, where: i.cart_id == ^cart.id))
+    {:ok, reload_cart(cart)}
+  end
+
   @doc """
   Updates a cart.
 
